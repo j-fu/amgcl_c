@@ -163,3 +163,17 @@ export(EXPORT AMGCL_CTargets
        FILE "${CMAKE_CURRENT_BINARY_DIR}/AMGCL_CTargets.cmake"
        NAMESPACE AMGCL_C::
        )
+
+# Register this build tree in the CMake user package registry
+# (~/.cmake/packages/AMGCL_C) so that downstream projects (e.g. pdelib with
+# -DWITH_AMGCL_C=ON) find a freshly built AMGCL_C without any
+# -DCMAKE_PREFIX_PATH. export(PACKAGE) does nothing unless
+# CMAKE_EXPORT_PACKAGE_REGISTRY is enabled, so enable it here by default;
+# an explicit -DCMAKE_EXPORT_PACKAGE_REGISTRY=OFF switches it back off.
+# An installation discovered via CMAKE_PREFIX_PATH or a default install
+# prefix still takes precedence (the registry is searched last); stale
+# registry entries are ignored by find_package.
+if(NOT DEFINED CMAKE_EXPORT_PACKAGE_REGISTRY)
+  set(CMAKE_EXPORT_PACKAGE_REGISTRY TRUE)
+endif()
+export(PACKAGE AMGCL_C)
